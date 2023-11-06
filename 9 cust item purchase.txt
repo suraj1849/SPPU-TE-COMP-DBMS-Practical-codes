@@ -1,0 +1,76 @@
+9)
+
+-- Create CUSTOMERS table
+CREATE TABLE CUSTOMERS (
+    CNo INT PRIMARY KEY,
+    Cname VARCHAR(100),
+    Ccity VARCHAR(50),
+    CMobile VARCHAR(15)
+);
+
+-- Create ITEMS table
+CREATE TABLE ITEMS (
+    INo INT PRIMARY KEY,
+    Iname VARCHAR(100),
+    Itype VARCHAR(50),
+    Iprice INT,
+    Icount INT
+);
+
+-- Create PURCHASE table
+CREATE TABLE PURCHASE (
+    PNo INT PRIMARY KEY,
+    Pdate DATE,
+    Pquantity INT,
+    Cno INT,
+    INo INT,
+    FOREIGN KEY (Cno) REFERENCES CUSTOMERS(CNo),
+    FOREIGN KEY (INo) REFERENCES ITEMS(INo)
+);
+
+-- Insert sample data into CUSTOMERS table
+INSERT INTO CUSTOMERS VALUES (1, 'Gopal', 'Pune', '9876543210');
+INSERT INTO CUSTOMERS VALUES (2, 'Alice', 'New York', '1234567890');
+
+-- Insert sample data into ITEMS table
+INSERT INTO ITEMS VALUES (101, 'Pen', 'Stationary', 10, 500);
+INSERT INTO ITEMS VALUES (102, 'Notebook', 'Stationary', 50, 200);
+INSERT INTO ITEMS VALUES (103, 'Mobile Phone', 'Electronics', 15000, 10);
+
+-- Insert sample data into PURCHASE table
+INSERT INTO PURCHASE VALUES (201, '2023-01-15', 2, 1, 101);
+INSERT INTO PURCHASE VALUES (202, '2023-02-10', 1, 2, 102);
+INSERT INTO PURCHASE VALUES (203, '2023-03-05', 3, 1, 103);
+
+-- 1. List all stationary items with price between 400/- to 1000/-
+SELECT *
+FROM ITEMS
+WHERE Itype = 'Stationary' AND Iprice BETWEEN 400 AND 1000;
+
+-- 2. Change the mobile number of customer “Gopal”
+UPDATE CUSTOMERS
+SET CMobile = '9999999999'
+WHERE Cname = 'Gopal';
+
+-- Update the PURCHASE table first
+UPDATE PURCHASE
+SET Cno = 7821836970
+WHERE Cno = (SELECT CNo FROM CUSTOMERS WHERE Cname = 'Gopal');
+-- Now, update the CUSTOMERS table
+UPDATE CUSTOMERS
+SET Cno = 7821836970
+WHERE Cname = 'Gopal';
+
+-- 3. Display the item with the maximum price
+SELECT *
+FROM ITEMS
+WHERE Iprice = (SELECT MAX(Iprice) FROM ITEMS);
+
+-- 4. Display all purchases sorted from the most recent to the oldest
+SELECT *
+FROM PURCHASE
+ORDER BY Pdate DESC;
+
+
+
+

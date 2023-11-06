@@ -1,0 +1,41 @@
+13)
+
+create table Student(RollNo NUMBER PRIMARY KEY,Name varchar(10),Attendance NUMBER,Status varchar(10) DEFAULT 'NOT SET');
+INSERT INTO Student (RollNo, Name, Attendance) VALUES (1, 'Pruthvi', 90);
+INSERT INTO Student (RollNo, Name, Attendance) VALUES (2, 'Adi', 75);
+INSERT INTO Student (RollNo, Name, Attendance) VALUES (3, 'Varun', 14);
+INSERT INTO Student (RollNo, Name, Attendance) VALUES (4, 'Prajakta', 58);
+INSERT INTO Student (RollNo, Name, Attendance) VALUES (5, 'Nayan', 36);
+INSERT INTO Student (RollNo, Name, Attendance) VALUES (6, 'Samarth', 88);
+INSERT INTO Student (RollNo, Name, Attendance) VALUES (7, 'Dhanu', 78);
+
+CREATE OR REPLACE PROCEDURE  CheckAttendanceStatus (
+    p_RollNo IN NUMBER
+)
+ IS
+
+   vAttendance NUMBER;
+BEGIN
+    SELECT Attendance INTO vAttendance FROM Student WHERE RollNo = p_RollNo;
+
+    IF vAttendance < 75 THEN
+        dbms_output.put_line('Term Not Granted');
+        UPDATE Student SET Status = 'Detained' WHERE RollNo = p_RollNo;
+    ELSE
+        dbms_output.put_line('Term Granted');
+        UPDATE Student SET Status = 'Not Detain' WHERE RollNo = p_RollNo;
+    END IF;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        dbms_output.put_line('No Such Data Found');
+    WHEN OTHERS THEN
+        dbms_output.put_line('Internal SQL Error');
+END CheckAttendanceStatus;
+/
+*******************
+
+
+
+
+
+

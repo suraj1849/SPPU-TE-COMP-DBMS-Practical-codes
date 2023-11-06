@@ -1,0 +1,49 @@
+6)
+
+CREATE TABLE Cust_Master (
+    Cust_no INT PRIMARY KEY,
+    Cust_name VARCHAR(255),
+    Qty_Ordered INT,
+    Order_date DATE,
+    Cust_addr VARCHAR(255)
+);
+
+-- Insert 10 records
+INSERT INTO Cust_Master (Cust_no, Cust_name, Qty_Ordered, Order_date, Cust_addr) VALUES
+(1001, 'Alice', 5, '2023-01-15', 'Bangalore'),
+(1002, 'Bob', 8, '2023-02-20', 'Mangalore'),
+(1003, 'Charlie', 10, '2023-03-10', 'Mumbai'),
+(1004, 'David', 7, '2023-04-05', 'Chennai'),
+(1005, 'Eva', 12, '2023-05-12', 'Mysore'),
+(1006, 'Frank', 3, '2023-06-18', 'Delhi'),
+(1007, 'Grace', 6, '2023-07-25', 'Pune'),
+(1008, 'Henry', 9, '2023-08-30', 'Mangalore'),
+(1009, 'Ivy', 4, '2023-09-07', 'Bangalore'),
+(1010, 'Jack', 11, '2023-10-15', 'Hyderabad');
+
+-- List names of customers having 'a' as the second letter in their name
+SELECT Cust_name
+FROM Cust_Master
+WHERE SUBSTR(Cust_name, 2, 1) = 'a';
+
+-- List customers who stay in a city whose first letter is 'M'
+SELECT *
+FROM Cust_Master
+WHERE SUBSTR(Cust_addr, 1, 1) = 'M';
+
+-- Display orders from Customer no C1002, C1005, C1007, and C1008
+SELECT *
+FROM Cust_Master
+WHERE Cust_no IN (1002, 1005, 1007, 1008);
+
+-- List clients who stay in either 'Bangalore' or 'Mangalore'
+SELECT *
+FROM Cust_Master
+WHERE Cust_addr IN ('Bangalore', 'Mangalore');
+
+-- Create view Customer_View consisting of Cust_no, Qty_ordered, and Order_date
+CREATE VIEW Customer_View AS
+SELECT Cust_no, Qty_Ordered, Order_date
+FROM Cust_Master;
+
+

@@ -1,0 +1,41 @@
+ 15)
+
+
+
+
+create table new_class(roll number(10), name varchar(10)); 
+create table old_class(roll number(10), name varchar(10));
+
+insert into new_class values(401 ,'Aditi');
+insert into new_class values(402 ,'Saumya');
+insert into old_class values(401 ,'Atmika');
+insert into old_class values(402 ,'Mohit');
+insert into old_class values(403 ,'Nitin');
+insert into old_class values(404 ,'Seema');
+
+select * from old_class; 
+select * from new _class;
+
+declare
+cursor cur_class is select * from old_class;
+cursor cur_check(str_name varchar) is select roll from new_class where name =str_name;
+str_roll new_class.roll%type;
+str_name new_class.name%type;
+load number(10);
+Begin
+open cur_class;
+loop
+fetch cur_class into str_roll,str_name;
+Exit when cur_class%notfound;
+open cur_check(str_name);
+fetch cur_check into load;
+if cur_check%found then
+dbms_output.put_line('stud' ||  ' ' || str_name ||  ' ' ||  'Name is already there .' );
+else
+dbms_output.put_line('stud' ||  ' ' || str_name ||  ' ' ||  'Name does not exist . Inserting in new_class table' );
+insert into new_class values(str_roll,str_name);
+end if;
+close cur_check;
+end loop;
+close cur_class;
+end;

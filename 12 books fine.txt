@@ -1,0 +1,57 @@
+12) 
+
+CREATE OR REPLACE PROCEDURE ReturnBook (
+    p_RollNo IN NUMBER,
+    p_BookName IN VARCHAR2
+) IS
+    v_DateofIssue DATE;
+    v_CurrentDate DATE := SYSDATE;
+    v_NumDays NUMBER;
+    v_FineAmount NUMBER := 0;
+BEGIN
+    -- Retrieve DateofIssue for the given RollNo and BookName
+    SELECT IssueDate INTO v_DateofIssue
+    FROM Borrower
+    WHERE RollNo = p_RollNo
+    AND BookName = p_BookName;
+
+    v_NumDays := TRUNC(v_CurrentDate - v_DateofIssue);
+
+    -- Check conditions for fine calculation
+    IF v_NumDays BETWEEN 15 AND 30 THEN
+        v_FineAmount := v_NumDays * 5; -- Rs 5 per day
+    ELSIF v_NumDays > 30 THEN
+        v_FineAmount := (v_NumDays - 30) * 50 + 150; -- Rs 50 per day after 30 days
+    END IF;
+
+    -- If a fine is applicable, store details in the Fine table
+    IF v_FineAmount > 0 THEN
+        INSERT INTO Fine (RollNo, ReturnDate, Amount)
+        VALUES (p_RollNo, v_CurrentDate, v_FineAmount);
+    END IF;
+
+    -- Update the Status in Borrower table to 'Returned'
+    UPDATE Borrower
+    SET Status = 'Returned'
+    WHERE RollNo = p_RollNo
+    AND BookName = p_BookName;
+
+    COMMIT;
+
+    -- Display success message
+    DBMS_OUTPUT.PUT_LINE('Book returned successfully.');
+
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        -- Handle the case where no data is found for the given RollNo and BookName
+        DBMS_OUTPUT.PUT_LINE('Book not found for the given RollNo and BookName.');
+    WHEN OTHERS THEN
+        -- Handle other exceptions and display the error message
+        DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END ReturnBook;
+/
+
+SET SERVEROUTPUT ON;
+
+-- Call the procedure and provide values for RollNo and BookName
+EXEC ReturnBook(p_RollNo, 'BookTitle');

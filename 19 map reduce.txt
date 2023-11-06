@@ -1,0 +1,118 @@
+19)
+
+Create a customer collection consisting of fields like name, email ID, profession, gender, bill amount
+
+1.	Write a MapReduce query for finding the count of male and female customers in the collection
+
+
+var mapFunction1 = function() {
+    emit(this.gender, 1);
+};
+
+var reduceFunction1 = function(key, values) {
+    return Array.sum(values);
+};
+
+db.customer.mapReduce(
+    mapFunction1,
+    reduceFunction1,
+    { out: "gender_count" }
+);
+
+db.gender_count.find();
+
+2.	Write a MapReduce query for finding the count of each profession in the collection
+
+var mapFunction2 = function() {
+    emit(this.profession, 1);
+};
+
+var reduceFunction2 = function(key, values) {
+    return Array.sum(values);
+};
+
+db.customer.mapReduce(
+    mapFunction2,
+    reduceFunction2,
+    { out: "profession_count" }
+);
+
+db.profession_count.find();
+
+// Create customer collection
+db.createCollection("customer");
+
+// Insert sample data
+db.customer.insertMany([
+  { name: 'John Doe', email: 'john@example.com', profession: 'Engineer', gender: 'Male', bill_amount: 6000 },
+  { name: 'Jane Smith', email: 'jane@example.com', profession: 'Doctor', gender: 'Female', bill_amount: 7000 },
+  // ... (insert more data)
+]);
+
+// 1. MapReduce query for finding the count of male and female customers
+var mapFunctionGenderCount = function() {
+  emit(this.gender, 1);
+};
+
+var reduceFunctionGenderCount = function(key, values) {
+  return Array.sum(values);
+};
+
+db.customer.mapReduce(
+  mapFunctionGenderCount,
+  reduceFunctionGenderCount,
+  { out: "genderCount" }
+);
+
+// Query to display the result
+print("Gender Count:");
+db.genderCount.find().forEach(printjson);
+
+// 2. MapReduce query for finding the count of each profession
+var mapFunctionProfessionCount = function() {
+  emit(this.profession, 1);
+};
+
+var reduceFunctionProfessionCount = function(key, values) {
+  return Array.sum(values);
+};
+
+db.customer.mapReduce(
+  mapFunctionProfessionCount,
+  reduceFunctionProfessionCount,
+  { out: "professionCount" }
+);
+
+// Query to display the result
+print("\nProfession Count:");
+db.professionCount.find().forEach(printjson);
+
+// 3. Display list of all customers with bill amounts greater than 5000/-
+print("\nCustomers with Bill Amount > 5000:");
+db.customer.find({ "bill_amount": { $gt: 5000 } }).forEach(printjson);
+
+// 4. Update the bill amount of any one customer
+print("\nUpdating Bill Amount of a Customer:");
+db.customer.updateOne({ "name": 'John Doe' }, { $set: { "bill_amount": 8000 } });
+print("Bill Amount Updated.");
+
+// 5. Display all customers with names starting with 'B'
+print("\nCustomers with Names Starting with 'B':");
+db.customer.find({ "name": /^B/ }).forEach(printjson);
+
+// 6. Display list of all customers with profession = “Business”
+print("\nCustomers with Profession = 'Business':");
+db.customer.find({ "profession": "Business" }).forEach(printjson);
+
+// 7. Display all customers in Descending order of Bill amount
+print("\nCustomers in Descending Order of Bill Amount:");
+db.customer.find().sort({ "bill_amount": -1 }).forEach(printjson);
+
+// 8. Create an index on the name field of customer collection and use explain()
+db.customer.createIndex({ "name": 1 });
+
+// Use explain() to see the query execution plan
+print("\nQuery Execution Plan with Index:");
+db.customer.find({ "name": 'Jane Smith' }).explain("executionStats");
+
+

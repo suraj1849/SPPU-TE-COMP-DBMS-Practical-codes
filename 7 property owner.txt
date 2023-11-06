@@ -1,0 +1,55 @@
+7)
+
+-- Creating PROPERTIES table
+CREATE TABLE PROPERTIES (
+    Pno INT PRIMARY KEY,
+    Type VARCHAR(50),
+    Sq_Ft_Area INT,
+    Rent INT,
+    Address VARCHAR(100),
+    Status VARCHAR(50),
+    OwnerNo INT,
+    FOREIGN KEY (OwnerNo) REFERENCES OWNERS(OwnerNo)
+);
+
+-- Creating OWNERS table
+CREATE TABLE OWNERS (
+    OwnerNo INT PRIMARY KEY,
+    OwnerName VARCHAR(100),
+    Phno VARCHAR(15)
+);
+
+-- Inserting sample data into OWNERS table
+INSERT INTO OWNERS VALUES (1, 'Gopal', '1234567890');
+INSERT INTO OWNERS VALUES (2, 'AnotherOwner', '9876543210');
+
+-- Inserting sample data into PROPERTIES table
+INSERT INTO PROPERTIES VALUES (101, '1 BHK', 800, 12000, 'Kothrud', 'Not Rented', 1);
+INSERT INTO PROPERTIES VALUES (102, '2 BHK', 1200, 20000, 'Baner', 'Rented', 1);
+INSERT INTO PROPERTIES VALUES (103, '1 BHK', 700, 10000, 'Kothrud', 'Not Rented', 2);
+INSERT INTO PROPERTIES VALUES (104, 'Studio', 500, 8000, 'Kothrud', 'Rented', 2);
+
+-- 1. Display all 1 BHK apartments in Kothrud which are not rented
+SELECT * 
+FROM PROPERTIES
+WHERE Type = '1 BHK' AND Address = 'Kothrud' AND Status = 'Not Rented';
+
+-- 2. Display all properties owned by “Gopal”
+SELECT * 
+FROM PROPERTIES
+WHERE OwnerNo = (SELECT OwnerNo FROM OWNERS WHERE OwnerName = 'Gopal');
+
+-- 3. Write a query to display the smallest property of each owner
+SELECT *
+FROM PROPERTIES P1
+WHERE Sq_Ft_Area = (SELECT MIN(Sq_Ft_Area) FROM PROPERTIES P2 WHERE P1.OwnerNo = P2.OwnerNo);
+
+-- 4. Display all properties in Kothrud in Descending order of rent
+SELECT *
+FROM PROPERTIES
+WHERE Address = 'Kothrud'
+ORDER BY Rent DESC;
+
+
+
+

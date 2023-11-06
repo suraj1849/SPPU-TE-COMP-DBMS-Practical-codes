@@ -1,0 +1,26 @@
+11)
+
+CREATE TABLE circle(radius NUMBER, area NUMBER);
+
+
+SQL> DECLARE
+ 2 radius_var  NUMBER;
+ 3 area_var NUMBER;
+ 4 pi NUMBER := 3.14;
+ 5 BEGIN
+ 6 FOR radius_var IN 5 .. 9 LOOP
+ 7 area_var := pi*radius_var*radius_var;
+ 8 dbms_output.put_line(area_var);
+ 9 INSERT INTO circle VALUES (radius_var,area_var);
+
+10 END LOOP;
+11 END;
+12 /
+
+PL/SQL procedure successfully completed.
+EXECUTE IMMEDIATE 'INSERT INTO areas VALUES (:1, :2)' USING radius_var, area_var;
+
+
+SQL> select * from circle;
+
+

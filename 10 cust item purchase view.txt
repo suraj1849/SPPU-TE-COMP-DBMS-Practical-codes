@@ -1,0 +1,66 @@
+10)
+
+-- Create CUSTOMERS table
+CREATE TABLE CUSTOMERS (
+    CNo INT PRIMARY KEY,
+    Cname VARCHAR(100),
+    Ccity VARCHAR(50),
+    CMobile VARCHAR(15)
+);
+
+-- Create ITEMS table
+CREATE TABLE ITEMS (
+    INo INT PRIMARY KEY,
+    Iname VARCHAR(100),
+    Itype VARCHAR(50),
+    Iprice INT,
+    Icount INT
+);
+
+-- Create PURCHASE table
+CREATE TABLE PURCHASE (
+    PNo INT PRIMARY KEY,
+    Pdate DATE,
+    Pquantity INT,
+    Cno INT,
+    INo INT,
+    FOREIGN KEY (Cno) REFERENCES CUSTOMERS(CNo),
+    FOREIGN KEY (INo) REFERENCES ITEMS(INo)
+);
+
+-- Insert sample data into CUSTOMERS table
+INSERT INTO CUSTOMERS VALUES (1, 'Maya', 'New York', '9876543210');
+INSERT INTO CUSTOMERS VALUES (2, 'Alice', 'London', '1234567890');
+INSERT INTO CUSTOMERS VALUES (3, 'Aisha', 'New York', '8765432109');
+
+-- Insert sample data into ITEMS table
+INSERT INTO ITEMS VALUES (101, 'Pen', 'Stationary', 10, 500);
+INSERT INTO ITEMS VALUES (102, 'Notebook', 'Stationary', 50, 200);
+INSERT INTO ITEMS VALUES (103, 'Mobile Phone', 'Electronics', 15000, 10);
+
+-- Insert sample data into PURCHASE table
+INSERT INTO PURCHASE VALUES (201, '2023-01-15', 2, 1, 101);
+INSERT INTO PURCHASE VALUES (202, '2023-02-10', 1, 2, 102);
+INSERT INTO PURCHASE VALUES (203, '2023-03-05', 3, 1, 103);
+
+-- 1. Count the number of customers in every city
+SELECT Ccity, COUNT(*) AS CustomerCount
+FROM CUSTOMERS
+GROUP BY Ccity;
+
+-- 2. Display all purchased quantity of Customer Maya
+SELECT Pquantity
+FROM PURCHASE
+WHERE Cno = (SELECT CNo FROM CUSTOMERS WHERE Cname = 'Maya');
+
+-- 3. Display list of customers whose name ends with 'a'
+SELECT *
+FROM CUSTOMERS
+WHERE Cname LIKE '%a';
+
+-- 4. Create a view which shows Iname, Price, and Count of all stationary items in descending order of price
+CREATE VIEW StationaryItemsView AS
+SELECT Iname, Iprice, Icount
+FROM ITEMS
+WHERE Itype = 'Stationary'
+ORDER BY Iprice DESC;

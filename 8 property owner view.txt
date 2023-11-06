@@ -1,0 +1,52 @@
+8)
+
+-- Create PROPERTIES table
+CREATE TABLE PROPERTIES (
+    Pno INT AUTO_INCREMENT PRIMARY KEY,
+    Type VARCHAR(50),
+    Sq_Ft_Area INT,
+    Rent DECIMAL(10,2),
+    Address VARCHAR(100),
+    Status VARCHAR(20),
+    OwnerNo INT,
+    FOREIGN KEY (OwnerNo) REFERENCES OWNERS(OwnerNo)
+);
+
+-- Create OWNERS table
+CREATE TABLE OWNERS (
+    OwnerNo INT AUTO_INCREMENT PRIMARY KEY,
+    OwnerName VARCHAR(50),
+    Phno VARCHAR(15)
+);
+
+-- Insert sample data into OWNERS table
+INSERT INTO OWNERS (OwnerName, Phno) VALUES
+('John Doe', '123-456-7890'),
+('Jane Smith', '987-654-3210'),
+('Mike Johnson', '555-123-4567');
+
+-- Insert sample data into PROPERTIES table
+INSERT INTO PROPERTIES (Type, Sq_Ft_Area, Rent, Address, Status, OwnerNo) VALUES
+('Apartment', 1200, 18000, '123 Main St', 'Available', 1),
+('House', 2000, 25000, '456 Oak St', 'Occupied', 2),
+('Condo', 1000, 15000, '789 Pine St', 'Available', 3);
+
+-- Create a view showing OwnerName along with Pno, Type, Address, and Rent
+CREATE VIEW OwnerPropertyView AS
+SELECT o.OwnerName, p.Pno, p.Type, p.Address, p.Rent
+FROM OWNERS o
+JOIN PROPERTIES p ON o.OwnerNo = p.OwnerNo;
+
+-- Display the names of all Owners whose name has "ee"
+SELECT OwnerName
+FROM OWNERS
+WHERE OwnerName LIKE '%ee%';
+
+-- Display Pno, Type, Address, Rent, and status of all properties with rent greater than 15000/- and less than 22000/-
+SELECT Pno, Type, Address, Rent, Status
+FROM PROPERTIES
+WHERE Rent > 15000 AND Rent < 22000;
+
+-- Display different property types registered with the real estate agency
+SELECT DISTINCT Type
+FROM PROPERTIES;

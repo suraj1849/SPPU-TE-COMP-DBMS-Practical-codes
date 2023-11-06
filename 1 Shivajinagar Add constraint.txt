@@ -1,0 +1,23 @@
+1)
+
+
+-- a) Find the names of all branches in the loan relation.
+SELECT DISTINCT branch_name FROM Loan;
+
+-- b) Find all loan numbers for loans made at 'Shivaji Nagar' Branch with loan amount > 12000.
+SELECT loan_no FROM Loan WHERE branch_name = 'Shivaji Nagar' AND amount > 12000;
+
+-- c) Find all customers who have a loan from the bank. Find their names, loan_no, and loan amount.
+SELECT c.cust_name, l.loan_no, l.amount
+FROM customer c
+JOIN Borrower b ON c.cust_name = b.cust_name
+JOIN Loan l ON b.loan_no = l.loan_no;
+
+-- d) List all customers in alphabetical order who have a loan from the Akurdi branch.
+SELECT c.cust_name
+FROM customer c
+JOIN Borrower b ON c.cust_name = b.cust_name
+JOIN Loan l ON b.loan_no = l.loan_no
+WHERE l.branch_name = 'Akurdi'
+ORDER BY c.cust_name;
+

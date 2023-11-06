@@ -1,0 +1,75 @@
+18)
+
+
+for (let i = 1; i <= 10000; i++) {
+   db.Employee.insertOne({
+      Emp_Id: "E" + i,
+      Emp_Name: "Employee " + i,
+      Emp_salary: Math.floor(Math.random() * 50000) + 50000,  // Random salary between 50000 and 100000
+      Emp_Dept: "IT"
+   });
+}
+
+let startTime = new Date();
+db.Employee.find({ Emp_Id: 'E10008' }).explain("executionStats");
+let endTime = new Date();
+
+let timeBeforeIndex = endTime - startTime;
+print("Time Before Index: " + timeBeforeIndex + "ms");
+db.Employee.createIndex({ Emp_Id: 1 });
+
+let startTime = new Date();
+db.Employee.find({ Emp_Id: 'E10008' }).explain("executionStats");
+let endTime = new Date();
+
+let timeAfterIndex = endTime - startTime;
+print("Time After Index: " + timeAfterIndex + "ms");
+
+
+
+
+// Connect to MongoDB (assuming you have already set up a MongoDB connection)
+
+// Create collection Employee
+db.createCollection("Employee");
+
+// Insert 10 documents into the collection
+db.Employee.insertMany([
+  { Emp_id: 'E1001', Emp_Name: 'John Doe', Emp_salary: 60000, Emp_Dept: 'IT' },
+  { Emp_id: 'E1002', Emp_Name: 'Jane Smith', Emp_salary: 55000, Emp_Dept: 'HR' },
+  { Emp_id: 'E1003', Emp_Name: 'Mike Johnson', Emp_salary: 48000, Emp_Dept: 'Marketing' },
+  // ... (insert 7 more documents)
+]);
+
+// Find employees whose salary is greater than 50000 Rs.
+db.Employee.find({ Emp_salary: { $gt: 50000 } });
+
+// Increase the salary of Smith by 5000 Rs
+db.Employee.updateOne({ Emp_Name: 'Jane Smith' }, { $inc: { Emp_salary: 5000 } });
+
+// Display information of employees working in Marketing department with less than 45000 salary
+db.Employee.find({ Emp_Dept: 'Marketing', Emp_salary: { $lt: 45000 } });
+
+// Display first five highest paid employees
+db.Employee.find().sort({ Emp_salary: -1 }).limit(5);
+
+// Delete Employee with Id ‘E1007’
+db.Employee.deleteOne({ Emp_id: 'E1007' });
+
+// Create an index on Emp_Id field
+db.Employee.createIndex({ Emp_id: 1 });
+
+// Add at least 10000 more documents to the collection (assuming you have the data ready)
+
+// Compare the time required to search Emp_id ‘E10008’ before and after creating an index
+// Without index
+let startTimeWithoutIndex = new Date();
+db.Employee.find({ Emp_id: 'E10008' });
+let endTimeWithoutIndex = new Date();
+print(`Time without index: ${endTimeWithoutIndex - startTimeWithoutIndex} milliseconds`);
+
+// With index
+let startTimeWithIndex = new Date();
+db.Employee.find({ Emp_id: 'E10008' });
+let endTimeWithIndex = new Date();
+print(`Time with index: ${endTimeWithIndex - startTimeWithIndex} milliseconds`);

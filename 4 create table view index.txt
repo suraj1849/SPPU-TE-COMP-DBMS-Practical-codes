@@ -1,0 +1,100 @@
+4)
+
+
+
+-- Create a view
+CREATE VIEW CustomerAccountView AS
+SELECT c.cust_name, c.cust_city, a.Acc_no, a.balance
+FROM customer c
+JOIN Depositor d ON c.cust_name = d.cust_name
+JOIN Account a ON d.acc_no = a.Acc_no;
+
+-- Create an index
+CREATE INDEX idx_loan_amount ON Loan(amount);
+
+-- Create a sequence
+CREATE SEQUENCE loan_seq START WITH 1 INCREMENT BY 1;
+
+-- Create a synonym
+CREATE SYNONYM cust_synonym FOR customer;
+
+
+
+CREATE TABLE Account (
+ Acc_no INT PRIMARY KEY,
+ branch_name VARCHAR(255),
+ balance DECIMAL(10, 2),
+ FOREIGN KEY (branch_name) REFERENCES branch(branch_name)
+);
+CREATE TABLE branch (
+ branch_name VARCHAR(255) PRIMARY KEY,
+ branch_city VARCHAR(255),
+ assets DECIMAL(15, 2) CHECK (assets >= 0)
+);
+CREATE TABLE customer (
+ cust_name VARCHAR(255) PRIMARY KEY,
+ cust_street VARCHAR(255),
+ cust_city VARCHAR(255)
+);
+CREATE TABLE Depositor (
+ cust_name VARCHAR(255),
+ acc_no INT,
+ PRIMARY KEY (cust_name, acc_no),
+ FOREIGN KEY (cust_name) REFERENCES customer(cust_name),
+ FOREIGN KEY (acc_no) REFERENCES Account(Acc_no)
+);
+CREATE TABLE Loan (
+ loan_no INT PRIMARY KEY,
+ branch_name VARCHAR(255),
+ amount DECIMAL(15, 2) CHECK (amount >= 0),
+ FOREIGN KEY (branch_name) REFERENCES branch(branch_name)
+);
+CREATE TABLE Borrower (
+ cust_name VARCHAR(255),
+ loan_no INT,
+ PRIMARY KEY (cust_name, loan_no),
+ FOREIGN KEY (cust_name) REFERENCES customer(cust_name),
+ FOREIGN KEY (loan_no) REFERENCES Loan(loan_no)
+);
+-- Insert data into the 'branch' table
+INSERT INTO branch (branch_name, branch_city, assets) VALUES
+('Branch1', 'City1', 500000.00),
+('Branch2', 'City2', 750000.50),
+('Branch3', 'City3', 300000.75),
+('Branch4', 'City4', 1000000.25),
+('Branch5', 'City5', 600000.80);
+-- Insert data into the 'customer' table
+INSERT INTO customer (cust_name, cust_street, cust_city) VALUES
+('Customer1', 'Street1', 'City1'),
+('Customer2', 'Street2', 'City2'),
+('Customer3', 'Street3', 'City3'),
+('Customer4', 'Street4', 'City4'),
+('Customer5', 'Street5', 'City5');
+-- Insert data into the 'Account' table
+INSERT INTO Account (Acc_no, branch_name, balance) VALUES
+(1, 'Branch1', 1500.00),
+(2, 'Branch2', 2000.50),
+(3, 'Branch3', 500.75),
+(4, 'Branch4', 10000.25),
+(5, 'Branch5', 800.80);
+-- Insert data into the 'Depositor' table
+INSERT INTO Depositor (cust_name, acc_no) VALUES
+('Customer1', 1),
+('Customer2', 2),
+('Customer3', 3),
+('Customer4', 4),
+('Customer5', 5);
+-- Insert data into the 'Loan' table
+INSERT INTO Loan (loan_no, branch_name, amount) VALUES
+(101, 'Branch1', 5000.00),
+(102, 'Branch2', 10000.50),
+(103, 'Branch3', 7500.75),
+(104, 'Branch4', 20000.25),
+(105, 'Branch5', 12000.80);
+-- Insert data into the 'Borrower' table
+INSERT INTO Borrower (cust_name, loan_no) VALUES
+('Customer1', 101),
+('Customer2', 102),
+('Customer3', 103),
+('Customer4', 104),
+('Customer5', 105); 

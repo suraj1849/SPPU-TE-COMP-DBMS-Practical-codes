@@ -1,0 +1,43 @@
+14)
+
+
+create table Student (RollNo NUMBER PRIMARY KEY,Name varchar(10),Marks NUMBER);
+insert into Student values (1,'Pruthvi',900);
+insert into Student values (2,'Dhanu',900);
+insert into Student values (3,'Adi',1400);
+insert into Student values (4,'Nayan',850);
+insert into Student values (5,'Samarth',950);
+create table Result(RollNo NUMBER,Name varchar(10),Class varchar(14));
+
+CREATE OR REPLACE PROCEDURE Proc_Grade (
+	pMarks IN NUMBER,
+	pClass OUT varchar
+) AS
+BEGIN
+	IF pMarks >= 990 AND pMarks <= 1500 THEN
+		pClass := 'Destinction';
+	ELSIF pMarks >= 900 AND pMarks <= 989 THEN
+		pClass := 'First Class';
+	ELSIF pMarks >= 825 AND pMarks <= 899 THEN
+		pClass := 'Second Class';
+	ELSE
+		pClass := 'Fail';
+	END IF;
+END;
+/
+
+DECLARE
+	vRollNo NUMBER;
+	vMarks NUMBER;
+	vName varchar(10);
+	vClass varchar(14);
+BEGIN
+	vRollNo := &rollno;
+	SELECT Marks INTO vMarks FROM Student WHERE RollNo=vRollNo;
+	SELECT Name INTO vName FROM Student WHERE RollNo=vRollNo;
+	Proc_Grade(vMarks,vClass);
+	INSERT INTO RESULT VALUES (vRollNo,vName,vClass);
+	COMMIT;
+END;
+/
+

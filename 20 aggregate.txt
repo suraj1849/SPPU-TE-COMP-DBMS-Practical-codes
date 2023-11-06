@@ -1,0 +1,61 @@
+20)
+
+
+db.students.aggregate([
+  { $match: { class: "TE" } },
+  { $sort: { marks: -1 } },
+  { $limit: 5 },
+  { $project: { _id: 0, RollNo: 1, name: 1, class: 1, marks: 1 } }
+])
+
+
+2.Display marks of topper of each division
+
+db.students.aggregate([
+  { 
+    $group: { 
+      _id: { class: "$class", division: "$division" }, 
+      topper: { $first: "$$ROOT" },
+      maxMarks: { $max: "$marks" } 
+    }
+  },
+  { 
+    $project: { 
+      _id: 0,
+      class: "$_id.class", 
+      division: "$_id.division", 
+      topperName: "$topper.name", 
+      topperMarks: "$maxMarks" 
+    }
+  }
+])
+
+
+3.Display the average marks of each division
+db.students.aggregate([
+  { $group: { _id: { class: "$class", division: "$division" }, avgMarks: { $avg: "$marks" } } },
+  { $project: { _id: 0, class: "$_id.class", division: "$_id.division", avgMarks: 1 } }
+])
+
+
+4.Display the rollcall of TE Comp A
+
+db.students.find({ class: "TE", division: "Comp A" }, { _id: 0, RollNo: 1, name: 1 })
+
+
+5.Display list of fail students from TE Comp A
+
+db.students.find({ class: "TE", division: "Comp A", marks: { $lt: 40 } }, { _id: 0, RollNo: 1, name: 1, marks: 1 })
+
+
+
+
+6.Display Name, Class and Marks of all students
+
+db.students.find({}, { _id: 0, name: 1, class: 1, marks: 1 })
+
+
+7.Display list of students who play football
+
+
+db.students.find({ sports: "football" }, { _id: 0, name: 1, class: 1, marks: 1, sports: 1 })

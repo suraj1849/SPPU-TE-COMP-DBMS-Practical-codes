@@ -1,0 +1,27 @@
+16
+
+create table Emp(EmpNo NUMBER PRIMARY KEY,EmpName varchar(10),EmpSalary NUMBER);
+
+create table Tracking(EmpNo NUMBER,EmpSalary NUMBER,Action varchar(10));
+
+CREATE OR REPLACE TRIGGER EmpTrigger
+BEFORE INSERT OR UPDATE OR DELETE ON Emp
+FOR EACH ROW
+BEGIN
+	IF INSERTING THEN
+		IF :NEW.EmpSalary < 50000 THEN
+			INSERT INTO Tracking (EmpNo, EmpSalary, Action) values (:NEW.EmpNo,:NEW.EmpSalary,'Insert');
+		END IF;
+	ELSIF UPDATING THEN
+		IF :NEW.EmpSalary < 50000 THEN
+			INSERT INTO Tracking (EmpNo, EmpSalary, Action) values (:NEW.EmpNo,:NEW.EmpSalary,'Update');
+		END IF;
+	ELSE
+		INSERT INTO Tracking (EmpNo, EmpSalary, Action) values (:OLD.EmpNo,:OLD.EmpSalary,'Delete');
+	END IF;
+END;
+/
+
+insert into Emp values (1,'Pruthvi',60000);
+--update
+--delete

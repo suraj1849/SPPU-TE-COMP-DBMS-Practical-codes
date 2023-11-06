@@ -1,0 +1,46 @@
+17)
+
+Consider CUSTOMER (ID, Name, Age, Address, Salary) create a row level trigger for the CUSTOMERS table that would fire for INSERT or UPDATE or DELETE operations performed on the CUSTOMERS table. This trigger will display the salary difference between the old values and new values.
+
+CREATE TABLE CUST (
+    ID INT PRIMARY KEY,
+    Name VARCHAR(50),
+    Age INT,
+    Address VARCHAR(100),
+    Salary INT
+);
+
+INSERT INTO CUST VALUES (1, 'John', 25, '123 Main St', 50000);
+INSERT INTO CUST VALUES (2, 'Jane', 30, '456 Oak St', 60000);
+
+SET SERVEROUTPUT ON;
+
+CREATE OR REPLACE TRIGGER SalaryDifferenceTrigger
+BEFORE INSERT OR UPDATE OR DELETE ON CUST
+FOR EACH ROW
+DECLARE
+    OldSalary INT;
+    NewSalary INT;
+BEGIN
+    IF INSERTING OR UPDATING THEN
+        OldSalary := NVL(:OLD.Salary, 0);
+        NewSalary := NVL(:NEW.Salary, 0);
+        DBMS_OUTPUT.PUT_LINE('Salary Difference: ' || (NewSalary - OldSalary));
+    ELSIF DELETING THEN
+        DBMS_OUTPUT.PUT_LINE('Deleted Salary: ' || :OLD.Salary);
+    END IF;
+END;
+/
+-- Query the CUST table
+SELECT * FROM CUST;
+
+-- Perform an UPDATE operation
+UPDATE CUST SET Salary = 55000 WHERE ID = 1;
+
+-- Perform a DELETE operation
+DELETE FROM CUST WHERE ID = 2;
+
+-- Perform an INSERT operation
+INSERT INTO CUST VALUES (3, 'Alice', 28, '789 Elm St', 70000);
+
+
